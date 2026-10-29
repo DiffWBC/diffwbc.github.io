@@ -95,6 +95,10 @@ td { font-variant-numeric: tabular-nums; }
 tr.ours td { background: var(--accent-soft); }
 tr.ours td:first-child { font-weight: 600; }
 td b { color: var(--accent); }
+td u { text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+th.grp { text-align: center; border-bottom: 1px solid var(--fg); }
+tr.sep td { border-bottom: 1px solid var(--fg); }
+#tracking + #results { padding-top: 0; }
 
 /* self-assessment band */
 .band { background: var(--band); border-block: 1px solid var(--line); }
@@ -156,15 +160,15 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
   <h2 style="margin-top:.4rem">Steering a frozen tracker</h2>
   <p class="muted" style="margin-top:.6rem">Every clip is a closed-loop physics rollout. Panels run left to right. The leftmost panel is the reference or the RL teacher. The others are DiffWBC, without and with steering.</p>
   <div class="vgrid">
-    <figure class="wide"><h3>Bars on the floor</h3><video src="media/bars.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Reference, then two DiffWBC checkpoints, each without and with an SDF foot-clearance cost. With the cost, the feet lift over the bars instead of kicking them.</figcaption></figure>
-    <figure class="wide"><h3>Low ceiling, 1.25 m</h3><video src="media/ceil.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Same layout as above, with a head-clearance cost. The steered robot crouches and keeps walking.</figcaption></figure>
-    <figure><h3>Ceiling, side view</h3><video src="media/limbo.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Unsteered (left) collides with the 1.25 m ceiling. Steered (right) ducks under it.</figcaption></figure>
-    <figure><h3>High-five</h3><video src="media/highfive.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>A hand-target cost, 12 descent steps. Only the arm group is masked to yield; the gait keeps tracking.</figcaption></figure>
-    <figure><h3>Tray balancing</h3><video src="media/tray.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Teacher, DiffWBC without steering, DiffWBC with a tray-tilt cost (0.3).</figcaption></figure>
-    <figure><h3>Weak knee motor</h3><video src="media/knee.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Teacher, DiffWBC without steering, steered when told about the fault, steered with a fault detector.</figcaption></figure>
-    <figure class="wide"><h3>Sparse VR input (head + two hands)</h3><video src="media/vr.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Reference, full tracking, three-point input without steering, and three-point steering (weight 0.5 with projection).</figcaption></figure>
-    <figure><h3>Dynamic: 360° flip</h3><video src="media/flip.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Reference, RL teacher, DiffWBC. Plain tracking, no steering.</figcaption></figure>
-    <figure><h3>Dynamic: cartwheel</h3><video src="media/cartwheel.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Reference, RL teacher, DiffWBC.</figcaption></figure>
+    <figure class="wide"><h3>Bars on the floor</h3><video src="media/bars.mp4" poster="media/bars.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, then two DiffWBC checkpoints, each without and with an SDF foot-clearance cost. With the cost, the feet lift over the bars instead of kicking them.</figcaption></figure>
+    <figure class="wide"><h3>Low ceiling, 1.25 m</h3><video src="media/ceil.mp4" poster="media/ceil.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Same layout as above, with a head-clearance cost. The steered robot crouches and keeps walking.</figcaption></figure>
+    <figure><h3>Ceiling, side view</h3><video src="media/limbo.mp4" poster="media/limbo.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Unsteered (left) collides with the 1.25 m ceiling. Steered (right) ducks under it.</figcaption></figure>
+    <figure><h3>High-five</h3><video src="media/highfive.mp4" poster="media/highfive.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>A hand-target cost, 12 descent steps. Only the arm group is masked to yield; the gait keeps tracking.</figcaption></figure>
+    <figure><h3>Tray balancing</h3><video src="media/tray.mp4" poster="media/tray.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Teacher, DiffWBC without steering, DiffWBC with a tray-tilt cost (0.3).</figcaption></figure>
+    <figure><h3>Weak knee motor</h3><video src="media/knee.mp4" poster="media/knee.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Teacher, DiffWBC without steering, steered when told about the fault, steered with a fault detector.</figcaption></figure>
+    <figure class="wide"><h3>Sparse VR input (head + two hands)</h3><video src="media/vr.mp4" poster="media/vr.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, full tracking, three-point input without steering, and three-point steering (weight 0.5 with projection).</figcaption></figure>
+    <figure><h3>Dynamic: 360° flip</h3><video src="media/flip.mp4" poster="media/flip.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, RL teacher, DiffWBC. Plain tracking, no steering.</figcaption></figure>
+    <figure><h3>Dynamic: cartwheel</h3><video src="media/cartwheel.mp4" poster="media/cartwheel.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, RL teacher, DiffWBC.</figcaption></figure>
   </div>
 </section>
 
@@ -176,6 +180,31 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
     <p>A deterministic tracker maps a reference to an action, so the only handle at test time is the reference itself. DiffWBC instead models the future. The plan is regenerated from the robot's real state at every tick, so a cost applied to the plan acts in closed loop by construction.</p>
     <p>Plain tracking needs one generator call (3.8 ms). Default steering uses 2 calls × 2 descent steps (20.3 ms per tick). Harder reaching targets use 12 steps (55.1 ms).</p>
   </div>
+</section>
+
+<section class="wrap" id="tracking">
+  <span class="eyebrow">Plain tracking</span>
+  <h2 style="margin-top:.4rem">A competitive general tracker from one generator call</h2>
+  <p class="muted" style="margin-top:.6rem">All methods run in one common harness: MuJoCo sim-to-sim, official checkpoints, 150 windows per set. Errors are on successful clips. Best in bold, second underlined.</p>
+  <div class="tbl">
+    <table class="track">
+      <thead>
+        <tr><th></th><th colspan="3" class="grp">AMASS held-out subjects</th><th colspan="3" class="grp">BONES unseen actors</th><th></th></tr>
+        <tr><th>Method</th><th>Succ. (%) ↑</th><th>E<sub>l</sub> (mm) ↓</th><th>E<sub>g</sub> med. (mm) ↓</th><th>Succ. (%) ↑</th><th>E<sub>l</sub> (mm) ↓</th><th>E<sub>g</sub> med. (mm) ↓</th><th>Steerable</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>SONIC (release)</td><td><b>98.7</b></td><td>31.9</td><td><b>99.2</b></td><td>96.7</td><td>24.3</td><td><u>50.4</u></td><td>no</td></tr>
+        <tr><td>SONIC (v1.1)</td><td><u>98.0</u></td><td>30.5</td><td>126.2</td><td>96.7</td><td>23.7</td><td>61.5</td><td>no</td></tr>
+        <tr><td>HoloMotion</td><td>95.3</td><td>43.5</td><td>119.1</td><td>96.7</td><td>35.2</td><td>89.4</td><td>no</td></tr>
+        <tr><td>HEFT (pmg)</td><td>92.7</td><td><u>29.4</u></td><td>127.0</td><td>96.7</td><td><u>21.5</u></td><td>51.6</td><td>no</td></tr>
+        <tr><td>Humanoid-GPT</td><td>95.3</td><td>44.5</td><td>254.3</td><td>96.0</td><td>30.9</td><td>88.9</td><td>no</td></tr>
+        <tr class="sep"><td>MimicLite Huge (teacher)</td><td>94.0</td><td>29.9</td><td>138.6</td><td><b>97.3</b></td><td>24.4</td><td>62.3</td><td>no</td></tr>
+        <tr class="ours"><td>DiffWBC (distilled)</td><td>95.3</td><td>31.4</td><td>135.5</td><td>96.7</td><td>24.7</td><td>62.2</td><td><b>yes</b></td></tr>
+        <tr class="ours"><td>DiffWBC (RL from scratch)</td><td>96.7</td><td><b>26.5</b></td><td><u>107.6</u></td><td><b>97.3</b></td><td><b>20.1</b></td><td><b>45.5</b></td><td><b>yes</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem">The distilled model is on par with its RL teacher. The model trained from scratch with RL, with no teacher, has the lowest local error E<sub>l</sub> on both sets.</p>
 </section>
 
 <section class="wrap" id="results">
