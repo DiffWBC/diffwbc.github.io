@@ -259,8 +259,8 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
     <div class="callout">
       <div class="stat"><div class="v num">91%</div><div class="k">of the top-2% most uncertain clips really fail (13&times; the 6.8% base rate)</div></div>
       <div class="stat"><div class="v num">74%</div><div class="k">real failures among the top 329 clips, vs. 50% for plan deviation and 34% for reference atypicality</div></div>
-      <div class="stat"><div class="v num">42%</div><div class="k">of the tracker's real failures (212 of 501) fixed by fine-tuning on 329 self-selected clips; reshuffling the seed alone flips 16%</div></div>
-      <div class="stat"><div class="v num">1.1%</div><div class="k">of untouched, previously successful clips break after fine-tuning, the same as seed noise (0.9%); 4.6% without consolidation</div></div>
+      <div class="stat"><div class="v num">50%</div><div class="k">of the tracker's real failures (250 of 501) fixed by fine-tuning on the 329 clips it is least sure about; reshuffling the seed alone flips 16%</div></div>
+      <div class="stat"><div class="v num">11&ndash;56&times;</div><div class="k">cheaper than selecting by simulated rollouts (1 or 5 per clip): the 78.8k-clip library is scored in ~12 min on 8 workers, no simulator</div></div>
     </div>
 
     <div class="charts">
@@ -276,7 +276,7 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
       </div>
       <div class="panel">
         <h3>AUC for real failures</h3>
-        <p class="muted" style="font-size:var(--step--1)">All scores are simulator-free. Orange: derived from the diffusion generator.</p>
+        <p class="muted" style="font-size:var(--step--1)">All scores are simulator-free. Orange: needs only the diffusion generator. Grey: needs a critic, a world model or the library.</p>
         <svg id="auc" viewBox="0 0 360 250" width="100%" role="img" aria-label="AUC per score"></svg>
       </div>
     </div>
@@ -297,7 +297,7 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
             </tbody>
           </table>
         </div>
-        <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Precision / recall. A threshold picked on half of the chunks (top ~6%) gives precision 0.61 and recall 0.49 on the other half.</p>
+        <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Precision / recall. Imagined world-model rollouts reach 0.93 at the top 2% and 0.71 / 0.52 at 5%, close to the noise spread. A threshold picked on half of the chunks (top ~6%) gives precision 0.61 and recall 0.49 on the other half.</p>
       </div>
       <div class="panel">
         <h3>Uncertainty and rarity are complementary</h3>
@@ -317,21 +317,23 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
 
     <div class="panel" style="margin-top:1.5rem">
       <h3>From diagnosis to improvement</h3>
-      <p class="muted" style="font-size:var(--step--1)">Fine-tune the RL-from-scratch tracker for 8k iterations on the 329 clips its own score ranks hardest, then re-run all 7,884 clips in simulation and compare clip by clip. To keep what it already masters, half of the environments replay the full library with a consolidation loss toward the frozen base and keep their RL return.</p>
+      <p class="muted" style="font-size:var(--step--1)">Fine-tune the RL-from-scratch tracker for 8k iterations on the 329 clips a score ranks hardest, then re-run 7,788 library clips in simulation and compare clip by clip with the base model (501 failures). To keep what it already masters, half of the environments replay the full library with a consolidation loss toward the frozen base and keep their RL return.</p>
       <div class="tbl">
-        <table>
-          <thead><tr><th>Run</th><th>Failures fixed ↑</th><th>Untouched clips broken ↓</th><th>Library failure rate ↓</th></tr></thead>
+        <table style="min-width:640px">
+          <thead><tr><th>Clips selected by</th><th>Failures fixed ↑</th><th>&hellip; not in the training list ↑</th><th>Untouched clips broken ↓</th><th>Library failure rate ↓</th></tr></thead>
           <tbody>
-            <tr><td>Base model, new simulation seed (noise floor)</td><td>78 / 501 (16%)</td><td>0.9%</td><td>6.4% &rarr; 6.4%</td></tr>
-            <tr><td>Fine-tune, consolidation loss only</td><td>189 / 501 (38%)</td><td>4.6%</td><td>6.4% &rarr; 8.2%</td></tr>
-            <tr class="ours"><td>Fine-tune, consolidation + RL on mastered clips</td><td><b>212 / 501 (42%)</b></td><td><b>1.1%</b></td><td><b>6.4% &rarr; 4.7%</b></td></tr>
+            <tr><td>None (base model, new simulation seed)</td><td>16%</td><td>18%</td><td>1.0%</td><td>6.4% &rarr; 6.4%</td></tr>
+            <tr><td>Plan deviation, consolidation loss only</td><td>38%</td><td>26%</td><td>4.6%</td><td>6.4% &rarr; 8.2%</td></tr>
+            <tr><td>Plan deviation</td><td>42%</td><td>32%</td><td><b>1.1%</b></td><td><b>6.4% &rarr; 4.7%</b></td></tr>
+            <tr><td>Imagined world-model rollout</td><td>43%</td><td>37%</td><td>1.4%</td><td>6.4% &rarr; 5.0%</td></tr>
+            <tr class="ours"><td>Noise spread (ours)</td><td><b>250 / 501 (50%)</b></td><td><b>44%</b></td><td>1.9%</td><td>6.4% &rarr; 5.0%</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Without the RL term the fine-tuned model fixes failures but breaks 4.6% of clips it used to track, so the library failure rate goes up. Keeping RL return on mastered clips removes that regression. Clips in these runs were ranked by plan deviation.</p>
+      <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Without the RL term on mastered clips the model breaks 4.6% of clips it used to track and the library failure rate goes up. With it, regressions stay at 1&ndash;2%, close to the 1.0% that a new simulation seed alone produces. Imagined rollouts detect failures best (AUC 0.908) but their list trains no better than plan deviation: a higher AUC does not mean better training data. Single seed; 50% vs 43% is about 33 clips.</p>
 
-      <h3 style="margin-top:1.4rem">Which score selects better training data?</h3>
-      <p class="muted" style="font-size:var(--step--1)">Same recipe, 329 clips each. Success on held-out failures: <em>same</em> are unseen clips of trained families, <em>fam</em> are 41 unseen families. hard40 checks that dense tracking is kept.</p>
+      <h3 style="margin-top:1.4rem">Held-out failures and dense tracking</h3>
+      <p class="muted" style="font-size:var(--step--1)">Success on held-out failures: <em>same</em> are unseen clips of trained families, <em>fam</em> are 41 unseen families. hard40 checks that dense tracking is kept.</p>
       <div class="tbl">
         <table>
           <thead><tr><th>Clips selected by</th><th>same ↑</th><th>fam ↑</th><th>hard40 succ. / E<sub>l</sub></th></tr></thead>
@@ -339,11 +341,27 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
             <tr><td>No fine-tuning</td><td>0.11</td><td>0.26</td><td>0.95&ndash;0.975 / 35 mm</td></tr>
             <tr><td>Random clips</td><td>0.07</td><td>0.24</td><td>&ndash;</td></tr>
             <tr><td>Plan deviation</td><td><b>0.45</b></td><td>0.39</td><td>0.95 / 34.4 mm</td></tr>
-            <tr class="ours"><td>Noise spread</td><td>0.42</td><td><b>0.48</b></td><td><b>0.975</b> / 35.7 mm</td></tr>
+            <tr><td>Imagined world-model rollout</td><td>0.40</td><td>0.42</td><td>0.95 / 34.7 mm</td></tr>
+            <tr class="ours"><td>Noise spread (ours)</td><td>0.42</td><td>0.48</td><td><b>0.975</b> / 35.7 mm</td></tr>
+            <tr class="ours"><td>Noise spread, top 1,500 of the library, 60% consolidation (run in progress, 8k of 24k its)</td><td>0.39</td><td><b>0.50</b></td><td><b>0.975 / 32.3 mm</b></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Single seed. Each fam clip is worth 0.009, so the 0.09 gap is about 10 clips.</p>
+      <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Single seed. Each fam clip is worth 0.009, so a 0.09 gap is about 10 clips. The 1,500-clip run tracks ordinary motions more precisely than the base model (32.3 vs 35 mm).</p>
+
+      <h3 style="margin-top:1.4rem">Selection cost</h3>
+      <p class="muted" style="font-size:var(--step--1)">Finding the clips a tracker cannot track, extrapolated to the 78,842-clip library from timings on the same machine (RTX 4090, 32 cores) and checkpoint. Simulator numbers are for our mjlab stack, not for other papers' simulators.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Method</th><th>Worker-hours</th><th>Wall, 8 workers</th><th>Needs a simulator</th></tr></thead>
+          <tbody>
+            <tr class="ours"><td>Noise spread (ours), 0.07 s per clip</td><td><b>~1.5</b></td><td><b>~12 min</b></td><td>no</td></tr>
+            <tr><td>Simulated rollout, 1 per clip</td><td>17&ndash;40</td><td>2.1&ndash;5.3 h</td><td>yes</td></tr>
+            <tr><td>Simulated rollouts, 5 per clip (as in Extreme-RGMT)</td><td>84&ndash;200</td><td>10.5&ndash;26 h</td><td>yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Lower bound: 0.77 s per rollout with one long process; upper bound: our actual scans. The base tracker fails on only ~1.2% of the library, so rollouts spend ~83 clips per failure found. Cost only: a list selected by rollouts was not trained with this recipe.</p>
     </div>
   </div>
 </section>
@@ -399,13 +417,13 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
   }
   function drawAUC() {
     var data = [
-      ['Critic value', 0.863, 0], ['Noise spread', 0.833, 1], ['Plan deviation', 0.820, 1],
+      ['Imagined rollout (WM)', 0.908, 0], ['Critic value', 0.863, 0], ['Noise spread', 0.833, 1], ['Plan deviation', 0.822, 1],
       ['Denoising error', 0.820, 1], ['Ref. rarity (kNN)', 0.808, 0], ['Jacobian sensitivity', 0.792, 1], ['WM residual', 0.768, 0]
     ];
     var svg = document.getElementById('auc');
-    var L = 132, R = 330, T = 8, rowH = 30, lo = 0.7, hi = 0.9;
+    var L = 132, R = 324, T = 6, rowH = 26.5, lo = 0.7, hi = 0.95;
     var x = function (v) { return L + (v - lo) / (hi - lo) * (R - L); };
-    [0.7, 0.75, 0.8, 0.85, 0.9].forEach(function (t) {
+    [0.7, 0.75, 0.8, 0.85, 0.9, 0.95].forEach(function (t) {
       svg.appendChild(el('line', { x1: x(t), x2: x(t), y1: T, y2: T + rowH * data.length, stroke: 'var(--line)', 'stroke-width': 1 }));
       svg.appendChild(el('text', { x: x(t), y: T + rowH * data.length + 14, 'text-anchor': 'middle', 'font-size': 10, fill: 'var(--muted)' }, t.toFixed(2)));
     });
