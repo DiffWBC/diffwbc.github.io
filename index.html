@@ -85,6 +85,11 @@ figcaption { font-size: var(--step--1); color: var(--muted); margin-top: .5rem; 
 .vgrid h3 { font-size: var(--step-0); font-weight: 700; margin-bottom: .45rem; }
 @media (max-width: 720px) { .vgrid { grid-template-columns: minmax(0, 1fr); } }
 
+.rgrid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .6rem; margin-top: 1.25rem; }
+.rgrid video { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; background: var(--surface); border: 1px solid var(--line); }
+@media (max-width: 820px) { .rgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+#real + #demos { padding-top: 0; }
+
 /* tables */
 .tbl { overflow-x: auto; margin-top: 1.25rem; }
 table { border-collapse: collapse; width: 100%; font-size: .9rem; min-width: 560px; }
@@ -155,6 +160,20 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
   </div>
 </div>
 
+<section class="wrap" id="real">
+  <span class="eyebrow">Real robot</span>
+  <h2 style="margin-top:.4rem">Running on a Unitree G1</h2>
+  <p class="muted" style="margin-top:.6rem">DiffWBC tracking reference motions on the real robot, one generator call per 50 Hz tick. The overhead gantry is a slack safety line.</p>
+  <div class="rgrid">
+      <video src="media/real1.mp4" poster="media/real1.jpg" autoplay muted loop playsinline controls preload="auto" aria-label="Real G1 clip 1"></video>
+      <video src="media/real2.mp4" poster="media/real2.jpg" autoplay muted loop playsinline controls preload="auto" aria-label="Real G1 clip 2"></video>
+      <video src="media/real3.mp4" poster="media/real3.jpg" autoplay muted loop playsinline controls preload="auto" aria-label="Real G1 clip 3"></video>
+      <video src="media/real4.mp4" poster="media/real4.jpg" autoplay muted loop playsinline controls preload="auto" aria-label="Real G1 clip 4"></video>
+      <video src="media/real5.mp4" poster="media/real5.jpg" autoplay muted loop playsinline controls preload="auto" aria-label="Real G1 clip 5"></video>
+      <video src="media/real6.mp4" poster="media/real6.jpg" autoplay muted loop playsinline controls preload="auto" aria-label="Real G1 clip 6"></video>
+  </div>
+</section>
+
 <section class="wrap" id="demos">
   <span class="eyebrow">Simulation rollouts</span>
   <h2 style="margin-top:.4rem">Steering a frozen tracker</h2>
@@ -166,9 +185,9 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
     <figure><h3>High-five</h3><video src="media/highfive.mp4" poster="media/highfive.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>A hand-target cost, 12 descent steps. Only the arm group is masked to yield; the gait keeps tracking.</figcaption></figure>
     <figure><h3>Tray balancing</h3><video src="media/tray.mp4" poster="media/tray.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Teacher, DiffWBC without steering, DiffWBC with a tray-tilt cost (0.3).</figcaption></figure>
     <figure><h3>Weak knee motor</h3><video src="media/knee.mp4" poster="media/knee.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Teacher, DiffWBC without steering, steered when told about the fault, steered with a fault detector.</figcaption></figure>
-    <figure class="wide"><h3>Sparse VR input (head + two hands)</h3><video src="media/vr.mp4" poster="media/vr.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, full tracking, three-point input without steering, and three-point steering (weight 0.5 with projection).</figcaption></figure>
-    <figure><h3>Dynamic: 360° flip</h3><video src="media/flip.mp4" poster="media/flip.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, RL teacher, DiffWBC. Plain tracking, no steering.</figcaption></figure>
-    <figure><h3>Dynamic: cartwheel</h3><video src="media/cartwheel.mp4" poster="media/cartwheel.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, RL teacher, DiffWBC.</figcaption></figure>
+    <figure class="wide"><h3>Velocity commands</h3><video src="media/velocity.mp4" poster="media/velocity.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Joystick walk-and-turn command (vx 0.83 m/s, yaw rate &minus;0.67 rad/s; green disc). Teacher, DiffWBC with the leg reference masked and no steering, and DiffWBC with a root-velocity cost. Measured velocities are printed under each panel.</figcaption></figure>
+    <figure><h3>Dynamic: 360° flip</h3><video src="media/flip.mp4" poster="media/flip.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, RL teacher, DiffWBC. Plain tracking; the full clip is completed with the landing.</figcaption></figure>
+    <figure><h3>Dynamic: 360&deg; flip, second clip</h3><video src="media/flip2.mp4" poster="media/flip2.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, RL teacher, DiffWBC. Plain tracking; the full clip is completed.</figcaption></figure>
   </div>
 </section>
 
@@ -238,10 +257,10 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
     </div>
 
     <div class="callout">
-      <div class="stat"><div class="v num">91%</div><div class="k">of the top-2% most uncertain clips really fail (13× the 6.8% base rate)</div></div>
+      <div class="stat"><div class="v num">91%</div><div class="k">of the top-2% most uncertain clips really fail (13&times; the 6.8% base rate)</div></div>
       <div class="stat"><div class="v num">74%</div><div class="k">real failures among the top 329 clips, vs. 50% for plan deviation and 34% for reference atypicality</div></div>
-      <div class="stat"><div class="v num">0.83</div><div class="k">AUC for predicting real failures, from the generator alone</div></div>
-      <div class="stat"><div class="v num">6.4→4.7%</div><div class="k">library failure rate after fine-tuning on 329 selected clips; untouched clips break at 1.1% (seed noise 1.0%)</div></div>
+      <div class="stat"><div class="v num">42%</div><div class="k">of the tracker's real failures (212 of 501) fixed by fine-tuning on 329 self-selected clips; reshuffling the seed alone flips 16%</div></div>
+      <div class="stat"><div class="v num">1.1%</div><div class="k">of untouched, previously successful clips break after fine-tuning, the same as seed noise (0.9%); 4.6% without consolidation</div></div>
     </div>
 
     <div class="charts">
@@ -298,15 +317,29 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
 
     <div class="panel" style="margin-top:1.5rem">
       <h3>From diagnosis to improvement</h3>
-      <p class="muted" style="font-size:var(--step--1)">Fine-tune for 8k iterations on 329 selected clips. Keep RL return on already-mastered clips so they do not regress. Success rates on held-out failures. <em>same</em>: unseen clips of trained families. <em>fam</em>: 41 unseen families. Dense tracking is checked on hard40.</p>
+      <p class="muted" style="font-size:var(--step--1)">Fine-tune the RL-from-scratch tracker for 8k iterations on the 329 clips its own score ranks hardest, then re-run all 7,884 clips in simulation and compare clip by clip. To keep what it already masters, half of the environments replay the full library with a consolidation loss toward the frozen base and keep their RL return.</p>
       <div class="tbl">
         <table>
-          <thead><tr><th>Clips selected by</th><th>same ↑</th><th>fam ↑</th><th>hard40 succ. / MPJPE</th><th>Library fixed</th><th>Untouched broken</th></tr></thead>
+          <thead><tr><th>Run</th><th>Failures fixed ↑</th><th>Untouched clips broken ↓</th><th>Library failure rate ↓</th></tr></thead>
           <tbody>
-            <tr><td>Base model (no fine-tuning)</td><td>0.11</td><td>0.26</td><td>0.95–0.975 / 35 mm</td><td>–</td><td>1.0% (seed noise)</td></tr>
-            <tr><td>Random clips</td><td>0.07</td><td>0.24</td><td>–</td><td>–</td><td>–</td></tr>
-            <tr><td>Plan deviation</td><td><b>0.45</b></td><td>0.39</td><td>0.95 / 34.4 mm</td><td>212 / 501</td><td>1.1%</td></tr>
-            <tr class="ours"><td>Noise spread (ours)</td><td>0.42</td><td><b>0.48</b></td><td><b>0.975</b> / 35.7 mm</td><td><span class="pending">scan running</span></td><td><span class="pending">scan running</span></td></tr>
+            <tr><td>Base model, new simulation seed (noise floor)</td><td>78 / 501 (16%)</td><td>0.9%</td><td>6.4% &rarr; 6.4%</td></tr>
+            <tr><td>Fine-tune, consolidation loss only</td><td>189 / 501 (38%)</td><td>4.6%</td><td>6.4% &rarr; 8.2%</td></tr>
+            <tr class="ours"><td>Fine-tune, consolidation + RL on mastered clips</td><td><b>212 / 501 (42%)</b></td><td><b>1.1%</b></td><td><b>6.4% &rarr; 4.7%</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:var(--step--1);margin-top:.6rem">Without the RL term the fine-tuned model fixes failures but breaks 4.6% of clips it used to track, so the library failure rate goes up. Keeping RL return on mastered clips removes that regression. Clips in these runs were ranked by plan deviation.</p>
+
+      <h3 style="margin-top:1.4rem">Which score selects better training data?</h3>
+      <p class="muted" style="font-size:var(--step--1)">Same recipe, 329 clips each. Success on held-out failures: <em>same</em> are unseen clips of trained families, <em>fam</em> are 41 unseen families. hard40 checks that dense tracking is kept.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Clips selected by</th><th>same ↑</th><th>fam ↑</th><th>hard40 succ. / E<sub>l</sub></th></tr></thead>
+          <tbody>
+            <tr><td>No fine-tuning</td><td>0.11</td><td>0.26</td><td>0.95&ndash;0.975 / 35 mm</td></tr>
+            <tr><td>Random clips</td><td>0.07</td><td>0.24</td><td>&ndash;</td></tr>
+            <tr><td>Plan deviation</td><td><b>0.45</b></td><td>0.39</td><td>0.95 / 34.4 mm</td></tr>
+            <tr class="ours"><td>Noise spread</td><td>0.42</td><td><b>0.48</b></td><td><b>0.975</b> / 35.7 mm</td></tr>
           </tbody>
         </table>
       </div>
