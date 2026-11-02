@@ -199,6 +199,34 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
   </div>
 </section>
 
+<section class="wrap" id="terrain">
+  <span class="eyebrow">Adding a condition</span>
+  <h2 style="margin-top:.4rem">Terrain is one more input</h2>
+  <p class="muted" style="margin-top:.6rem">The generator can take a new condition without changing its structure. We encode a 21&times;21 height scan around the robot into 36 terrain tokens and append them to the generator&rsquo;s input sequence. The reference stays a flat-ground motion, the inverse-dynamics head is unchanged, and the model is fine-tuned with RL on stairs, slopes, boxes and rough ground.</p>
+  <div class="vgrid">
+    <figure><h3>Stairs up</h3><video src="media/terrain_stairs_up.mp4" poster="media/terrain_stairs_up.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Stairs down</h3><video src="media/terrain_stairs_down.mp4" poster="media/terrain_stairs_down.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Slope</h3><video src="media/terrain_slope.mp4" poster="media/terrain_slope.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Boxes</h3><video src="media/terrain_boxes.mp4" poster="media/terrain_boxes.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Boxes, another motion</h3><video src="media/terrain_boxes2.mp4" poster="media/terrain_boxes2.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Rough ground</h3><video src="media/terrain_rough.mp4" poster="media/terrain_rough.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+  </div>
+  <p class="muted" style="margin-top:1rem">Left: the flat-ground reference motion. Right: the terrain-conditioned model on the terrain shown. The label gives the terrain family, the difficulty level (L0&ndash;L9) and the final distance to the end of the reference path. These clips are picked from cells the model passes; the table below covers all cells.</p>
+  <div class="tbl">
+    <table>
+      <thead>
+        <tr><th>Success (no fall, ends within 1&nbsp;m) &uarr;</th><th>Flat</th><th>Stairs down</th><th>Stairs up</th><th>Slope</th><th>Boxes</th><th>Rough</th><th>All</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Without terrain input</td><td>0.70</td><td>0.40</td><td>0.06</td><td>0.70</td><td>0.25</td><td>0.18</td><td>0.31</td></tr>
+        <tr><td>Terrain tokens switched off</td><td>0.90</td><td>0.60</td><td>0.12</td><td>0.80</td><td>0.58</td><td>0.36</td><td>0.50</td></tr>
+        <tr class="ours"><td>With terrain tokens</td><td>0.90</td><td><b>1.00</b></td><td><b>0.94</b></td><td><b>1.00</b></td><td><b>0.92</b></td><td><b>0.86</b></td><td><b>0.92</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:.75rem">88 walking and jogging clips that cross the terrain, each on six terrain families and ten difficulty levels, simulation only. The last row averages to 0.90 over four evaluation passes. &ldquo;Switched off&rdquo; keeps the fine-tuned weights and masks the tokens, so the gain comes from the scan. Terrain training costs some tracking accuracy (local error 28 vs. 25&nbsp;mm) and reduces how much extra steering helps on top. We have not run this model on the real robot.</p>
+</section>
+
 <section class="wrap" id="method">
   <span class="eyebrow">Method</span>
   <h2 style="margin-top:.4rem">Plan, then execute</h2>
