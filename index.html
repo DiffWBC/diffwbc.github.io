@@ -177,7 +177,18 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
 <section class="wrap" id="demos">
   <span class="eyebrow">Simulation rollouts</span>
   <h2 style="margin-top:.4rem">Steering a frozen tracker</h2>
-  <p class="muted" style="margin-top:.6rem">Every clip is a closed-loop physics rollout. Panels run left to right. The leftmost panel is the reference or the RL teacher. The others are DiffWBC, without and with steering.</p>
+  <h3 style="margin-top:1.75rem">Steering bends the plan</h3>
+  <p class="muted" style="margin-top:.5rem">Each clip shows the generator&rsquo;s 0.96&nbsp;s plan as ghosts. Top: without steering (grey ghosts, red where the plan hits the obstacle; gold is the reference motion). Bottom: the same reference after test-time steering (blue ghosts). The cost moves the plan itself, and the robot executes the moved plan.</p>
+  <div class="vgrid">
+    <figure><h3>Bars, reference motion A</h3><video src="media/ghost_bars_avoidcar000.mp4" poster="media/ghost_bars_avoidcar000.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Bars, reference motion B</h3><video src="media/ghost_bars_walkloop.mp4" poster="media/ghost_bars_walkloop.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Bars, reference motion C</h3><video src="media/ghost_bars_carryheavy.mp4" poster="media/ghost_bars_carryheavy.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Low ceiling, reference motion A</h3><video src="media/ghost_limbo_talking.mp4" poster="media/ghost_limbo_talking.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Low ceiling, reference motion B</h3><video src="media/ghost_limbo_carryheavy.mp4" poster="media/ghost_limbo_carryheavy.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+    <figure><h3>Low ceiling, reference motion C</h3><video src="media/ghost_limbo_strafing.mp4" poster="media/ghost_limbo_strafing.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
+  </div>
+  <h3 style="margin-top:2.25rem">Rollouts side by side</h3>
+  <p class="muted" style="margin-top:.5rem">Every clip is a closed-loop physics rollout. Panels run left to right. The leftmost panel is the reference or the RL teacher. The others are DiffWBC, without and with steering.</p>
   <div class="vgrid">
     <figure class="wide"><h3>Bars on the floor</h3><video src="media/bars.mp4" poster="media/bars.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, then two DiffWBC checkpoints, each without and with an SDF foot-clearance cost. With the cost, the feet lift over the bars instead of kicking them.</figcaption></figure>
     <figure class="wide"><h3>Low ceiling, 1.25 m</h3><video src="media/ceil.mp4" poster="media/ceil.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Same layout as above, with a head-clearance cost. The steered robot crouches and keeps walking.</figcaption></figure>
