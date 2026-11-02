@@ -187,12 +187,9 @@ footer { padding-block: 2rem 3rem; font-size: var(--step--1); color: var(--muted
     <figure><h3>Low ceiling, reference motion B</h3><video src="media/ghost_limbo_carryheavy.mp4" poster="media/ghost_limbo_carryheavy.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
     <figure><h3>Low ceiling, reference motion C</h3><video src="media/ghost_limbo_strafing.mp4" poster="media/ghost_limbo_strafing.jpg" autoplay muted loop playsinline controls preload="metadata"></video></figure>
   </div>
-  <h3 style="margin-top:2.25rem">Rollouts side by side</h3>
+  <h3 style="margin-top:2.25rem">Other objectives, side by side</h3>
   <p class="muted" style="margin-top:.5rem">Every clip is a closed-loop physics rollout. Panels run left to right. The leftmost panel is the reference or the RL teacher. The others are DiffWBC, without and with steering.</p>
   <div class="vgrid">
-    <figure class="wide"><h3>Bars on the floor</h3><video src="media/bars.mp4" poster="media/bars.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Reference, then two DiffWBC checkpoints, each without and with an SDF foot-clearance cost. With the cost, the feet lift over the bars instead of kicking them.</figcaption></figure>
-    <figure class="wide"><h3>Low ceiling, 1.25 m</h3><video src="media/ceil.mp4" poster="media/ceil.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Same layout as above, with a head-clearance cost. The steered robot crouches and keeps walking.</figcaption></figure>
-    <figure><h3>Ceiling, side view</h3><video src="media/limbo.mp4" poster="media/limbo.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Unsteered (left) collides with the 1.25 m ceiling. Steered (right) ducks under it.</figcaption></figure>
     <figure><h3>High-five</h3><video src="media/highfive.mp4" poster="media/highfive.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>A hand-target cost, 12 descent steps. Only the arm group is masked to yield; the gait keeps tracking.</figcaption></figure>
     <figure><h3>Tray balancing</h3><video src="media/tray.mp4" poster="media/tray.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Teacher, DiffWBC without steering, DiffWBC with a tray-tilt cost (0.3).</figcaption></figure>
     <figure><h3>Weak knee motor</h3><video src="media/knee.mp4" poster="media/knee.jpg" autoplay muted loop playsinline controls preload="auto"></video><figcaption>Teacher, DiffWBC without steering, steered when told about the fault, steered with a fault detector.</figcaption></figure>
